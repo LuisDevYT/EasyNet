@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LocalNet Multiplayer Backend</title>
+
+  <style>
+    :root {
+      --bg: #070a12;
+      --bg-2: #0c1020;
+      --panel: #111827;
+      --panel-light: #172033;
+      --text: #f7f9ff;
+      --muted: #aab4c5;
+      --soft: #d6def0;
+
+      --blue: #4f8cff;
+      --purple: #8b5cf6;
+      --green: #35d07f;
+      --yellow: #ffd166;
+      --red: #ff6b6b;
+      --cyan: #4dd4ff;
+
+      --border: rgba(255,255,255,0.11);
+      --shadow: 0 24px 80px rgba(0,0,0,0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1140px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(7,10,18,0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .logo span {
+      color: var(--blue);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 20px;
+      border-radius: 13px;
+      border: 0;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 16px 35px rgba(79,140,255,0.28);
+    }
+
+    .button.secondary {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .hero {
+      position: relative;
+      padding: 108px 0 86px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(79,140,255,0.28), transparent 30%),
+        radial-gradient(circle at 80% 10%, rgba(139,92,246,0.22), transparent 28%),
+        linear-gradient(180deg, #080b15 0%, #0d1224 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 180px;
+      background: linear-gradient(180deg, transparent, var(--bg));
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(79,140,255,0.35);
+      background: rgba(79,140,255,0.11);
+      color: #cfe0ff;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      max-width: 940px;
+      margin: 0 auto 24px;
+      font-size: clamp(44px, 7vw, 84px);
+      line-height: 0.94;
+      letter-spacing: -0.07em;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto 34px;
+      color: var(--muted);
+      font-size: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    section {
+      padding: 78px 0;
+    }
+
+    .section-dark {
+      background: var(--bg);
+    }
+
+    .section-blue {
+      background:
+        radial-gradient(circle at top left, rgba(79,140,255,0.14), transparent 30%),
+        #0a1020;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-purple {
+      background:
+        radial-gradient(circle at top right, rgba(139,92,246,0.15), transparent 35%),
+        #100d1f;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-green {
+      background:
+        radial-gradient(circle at center top, rgba(53,208,127,0.13), transparent 34%),
+        #07130e;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      max-width: 780px;
+      margin: 0 auto 48px;
+      text-align: center;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 12px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .section-title h2 {
+      margin: 0 0 16px;
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
+      box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+    }
+
+    .card.blue {
+      border-color: rgba(79,140,255,0.28);
+      background: linear-gradient(180deg, rgba(79,140,255,0.13), rgba(255,255,255,0.035));
+    }
+
+    .card.green {
+      border-color: rgba(53,208,127,0.3);
+      background: linear-gradient(180deg, rgba(53,208,127,0.12), rgba(255,255,255,0.035));
+    }
+
+    .card.purple {
+      border-color: rgba(139,92,246,0.3);
+      background: linear-gradient(180deg, rgba(139,92,246,0.13), rgba(255,255,255,0.035));
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 34px;
+      align-items: center;
+    }
+
+    .split.reverse {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+
+    .text-block h2 {
+      margin: 0 0 16px;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+    }
+
+    .text-block p {
+      color: var(--muted);
+      font-size: 18px;
+      margin: 0 0 20px;
+    }
+
+    .pill-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      color: var(--soft);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .code-card {
+      background: #070a10;
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.07);
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+    }
+
+    pre {
+      margin: 0;
+      padding: 24px;
+      overflow-x: auto;
+      color: #d8e4ff;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    .kw { color: #ff7ab6; }
+    .type { color: #7dd3fc; }
+    .fn { color: #facc15; }
+    .str { color: #86efac; }
+    .num { color: #c084fc; }
+    .comment { color: #6b7280; }
+    .prop { color: #93c5fd; }
+    .class { color: #67e8f9; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .price-card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.035));
+    }
+
+    .price-card.featured {
+      border-color: rgba(53,208,127,0.5);
+      background:
+        radial-gradient(circle at top right, rgba(53,208,127,0.2), transparent 35%),
+        linear-gradient(180deg, rgba(53,208,127,0.12), rgba(255,255,255,0.035));
+    }
+
+    .price-card h3 {
+      margin: 0 0 4px;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+    }
+
+    .ccu {
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+    }
+
+    .price {
+      margin: 24px 0 8px;
+      font-size: 48px;
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: -0.06em;
+      min-height: 54px;
+      white-space: nowrap;
+    }
+
+    .price small {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .price-desc {
+      color: var(--muted);
+      margin: 0 0 22px;
+    }
+
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 24px 0 0;
+      color: var(--muted);
+    }
+
+    .check-list li {
+      margin-bottom: 10px;
+    }
+
+    .check-list li::before {
+      content: "✓";
+      color: var(--green);
+      font-weight: 900;
+      margin-right: 8px;
+    }
+
+    .big-quote {
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1.08;
+      letter-spacing: -0.055em;
+      font-weight: 950;
+    }
+
+    .big-quote span {
+      color: var(--green);
+    }
+
+    footer {
+      padding: 44px 0;
+      background: #05070c;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .grid,
+      .pricing-grid,
+      .split,
+      .split.reverse {
+        grid-template-columns: 1fr;
+      }
+
+      .price-card.featured {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 82px 0 68px;
+      }
+
+      pre {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Easy<span>Net</span></div>
+
+        <div class="nav-links">
+          <a href="#simple">Simple</a>
+          <a href="#code">Code</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#transport">Transport</a>
+        </div>
+
+        <a class="button secondary" href="#pricing">Get started</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-content">
+        <div class="badge">Deterministic multiplayer backend for Unity</div>
+
+        <h1>Online multiplayer that feels like local multiplayer.</h1>
+
+        <p>
+          Build Unity multiplayer games without sending RPCs everywhere, without custom networking code in every script,
+          and without prediction or rollback complexity. Just send player input and run the same deterministic game.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button" href="#code">See how simple it is</a>
+          <a class="button secondary" href="#pricing">View ultra cheap pricing</a>
+        </div>
+
+        <div class="hero-note">
+          Simple input sync, deterministic simulation, reliable UDP transport, and Unity-friendly code.
+        </div>
+      </div>
+    </section>
+
+    <section id="simple" class="section-blue">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-kicker">The main idea</span>
+          <h2>You program the game normally.</h2>
+          <p>
+            No RPC spam. No network variables everywhere. No special multiplayer version of every mechanic.
+            Your gameplay code receives input, updates the simulation, and every client reaches the same result.
+          </p>
+        </div>
+
+        <div class="grid">
+          <div class="card blue">
+            <div class="icon">01</div>
+            <h3>Send input only</h3>
+            <p>
+              Players send their controls, not every little action in the game.
+              The simulation decides what happens.
+            </p>
+          </div>
+
+          <div class="card green">
+            <div class="icon">02</div>
+            <h3>Run deterministic code</h3>
+            <p>
+              Use deterministic values like <strong>sfloat</strong> so the same input produces the same gameplay result.
+            </p>
+          </div>
+
+          <div class="card purple">
+            <div class="icon">03</div>
+            <h3>Everyone stays synced</h3>
+            <p>
+              The backend handles packet flow, ordering and reliability so your game logic stays clean.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="code" class="section-dark">
+      <div class="container">
+        <div class="split">
+          <div class="text-block">
+            <span class="section-kicker">Simple gameplay code</span>
+            <h2>No RPC. No prediction. Just input and movement.</h2>
+            <p>
+              This is the style of code the system is designed for.
+              You receive the player input and move the character using deterministic math.
+            </p>
+
+            <div class="pill-list">
+              <div class="pill">No RPC calls</div>
+              <div class="pill">No NetworkTransform</div>
+              <div class="pill">No client prediction</div>
+              <div class="pill">No rollback setup</div>
+              <div class="pill">Uses sfloat</div>
+            </div>
+          </div>
+
+          <div class="code-card">
+            <div class="code-header">
+              <span>PlayerController.cs</span>
+              <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+
+            <pre><code><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="class">PlayerController</span> : <span class="type">DeterministicBehaviour</span>
+{
+    <span class="kw">public</span> <span class="type">sfloat</span> <span class="prop">moveSpeed</span> = (<span class="type">sfloat</span>)<span class="num">5</span>;
+
+    <span class="kw">public override void</span> <span class="fn">OnInput</span>(<span class="type">PlayerInput</span> input)
+    {
+        <span class="comment">// This is the only thing you need.</span>
+        <span class="comment">// Read input and move the player.</span>
+
+        <span class="type">sfloat</span> x = input.<span class="fn">GetSFloat</span>(<span class="str">"Horizontal"</span>);
+        <span class="type">sfloat</span> z = input.<span class="fn">GetSFloat</span>(<span class="str">"Vertical"</span>);
+
+        <span class="type">sfloat3</span> direction = <span class="kw">new</span> <span class="type">sfloat3</span>(x, <span class="num">0</span>, z);
+
+        transform.position += direction * moveSpeed * Deterministic.DeltaTime;
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-purple">
+      <div class="container">
+        <div class="split reverse">
+          <div class="code-card">
+            <div class="code-header">
+              <span>Bomb.cs</span>
+              <div class="dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
+
+            <pre><code><span class="kw">using</span> UnityEngine;
+<span class="kw">using</span> System.Collections;
+
+<span class="kw">public class</span> <span class="class">Bomb</span> : <span class="type">DeterministicBehaviour</span>
+{
+    <span class="kw">public</span> <span class="type">GameObject</span> <span class="prop">explosionPrefab</span>;
+
+    <span class="kw">public override void</span> <span class="fn">OnSpawn</span>()
+    {
+        <span class="fn">StartDeterministicCoroutine</span>(<span class="fn">ExplodeAfterDelay</span>());
+    }
+
+    <span class="type">IEnumerator</span> <span class="fn">ExplodeAfterDelay</span>()
+    {
+        <span class="kw">yield return new</span> <span class="type">WaitForDeterministicSeconds</span>((<span class="type">sfloat</span>)<span class="num">2</span>);
+
+        Deterministic.<span class="fn">Spawn</span>(
+            explosionPrefab,
+            transform.position,
+            transform.rotation
+        );
+
+        Deterministic.<span class="fn">Destroy</span>(gameObject);
+    }
+}</code></pre>
+          </div>
+
+          <div class="text-block">
+            <span class="section-kicker">Deterministic timing</span>
+            <h2>Coroutines that belong to the simulation.</h2>
+            <p>
+              Timers, cooldowns, bombs, traps and abilities can use deterministic time.
+              That means every client waits the same amount of simulation time before running the event.
+            </p>
+
+            <div class="pill-list">
+              <div class="pill">WaitForDeterministicSeconds</div>
+              <div class="pill">Deterministic cooldowns</div>
+              <div class="pill">Synced abilities</div>
+              <div class="pill">No manual RPC event</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="transport" class="section-green">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-kicker">Optimized transport</span>
+          <h2>Reliable UDP made for real mobile games.</h2>
+          <p>
+            The socket is optimized for gameplay packets and mobile data.
+            It is designed to keep the game responsive while still giving you reliable delivery where it matters.
+          </p>
+        </div>
+
+        <div class="grid">
+          <div class="card green">
+            <h3>Reliable UDP</h3>
+            <p>
+              Important packets can be delivered reliably without switching your whole game to slow request-response logic.
+            </p>
+          </div>
+
+          <div class="card green">
+            <h3>Mobile data friendly</h3>
+            <p>
+              Built for players on unstable networks, changing signal quality and real-world phone connections.
+            </p>
+          </div>
+
+          <div class="card green">
+            <h3>No prediction required</h3>
+            <p>
+              The system avoids the usual prediction and reconciliation workflow.
+              Less magic, less debugging, less code.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-kicker">Why it is easy</span>
+          <h2>Simple multiplayer, by design.</h2>
+          <p>
+            Rollback and prediction can be powerful, but they also make multiplayer harder to understand.
+            This backend chooses simplicity first: deterministic input sync with clean gameplay code.
+          </p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Without this backend</h3>
+            <p>
+              You often need RPCs, network variables, prediction, reconciliation, state correction and special multiplayer logic.
+            </p>
+          </div>
+
+          <div class="card blue">
+            <h3>With this backend</h3>
+            <p>
+              You write deterministic gameplay code and send player inputs.
+              The same code runs everywhere.
+            </p>
+          </div>
+
+          <div class="card green">
+            <h3>Result</h3>
+            <p>
+              Multiplayer becomes easier to build, easier to debug and easier to ship, especially for small teams.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section-blue">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-kicker">Ultra cheap pricing</span>
+          <h2>Multiplayer pricing that does not punish you for growing.</h2>
+          <p>
+            Start for free, scale when your game needs more CCU, and keep your costs predictable.
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <div class="price-card">
+            <h3>Free</h3>
+            <div class="ccu">100 CCU</div>
+
+            <div class="price">$0</div>
+            <p class="price-desc">For prototypes, testing and small games.</p>
+
+            <a class="button secondary" href="#">Start free</a>
+
+            <ul class="check-list">
+              <li>Unity SDK</li>
+              <li>Deterministic input sync</li>
+              <li>Reliable UDP socket</li>
+              <li>Room + key matchmaking</li>
+              <li>Trophy-based matchmaking</li>
+            </ul>
+          </div>
+
+          <div class="price-card">
+            <h3>Starter</h3>
+            <div class="ccu">500 CCU</div>
+
+            <div class="price">$12.50 <small>/ month</small></div>
+            <p class="price-desc">For small live games and early launches.</p>
+
+            <a class="button secondary" href="#">Choose Starter</a>
+
+            <ul class="check-list">
+              <li>Unity SDK</li>
+              <li>Deterministic input sync</li>
+              <li>Reliable UDP socket</li>
+              <li>Room + key matchmaking</li>
+              <li>Trophy-based matchmaking</li>
+            </ul>
+          </div>
+
+          <div class="price-card featured">
+            <h3>Indie</h3>
+            <div class="ccu">1000 CCU</div>
+
+            <div class="price">$25 <small>/ month</small></div>
+            <p class="price-desc">For indie games that need serious scale.</p>
+
+            <a class="button" href="#">Choose Indie</a>
+
+            <ul class="check-list">
+              <li>Unity SDK</li>
+              <li>Deterministic input sync</li>
+              <li>Reliable UDP socket</li>
+              <li>Room + key matchmaking</li>
+              <li>Trophy-based matchmaking</li>
+            </ul>
+          </div>
+
+          <div class="price-card">
+            <h3>Scale</h3>
+            <div class="ccu">2000 CCU</div>
+
+            <div class="price">$50 <small>/ month</small></div>
+            <p class="price-desc">For bigger games with growing traffic.</p>
+
+            <a class="button secondary" href="#">Choose Scale</a>
+
+            <ul class="check-list">
+              <li>Unity SDK</li>
+              <li>Deterministic input sync</li>
+              <li>Reliable UDP socket</li>
+              <li>Room + key matchmaking</li>
+              <li>Trophy-based matchmaking</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-purple">
+      <div class="container">
+        <div class="big-quote">
+          Stop writing networking code everywhere.
+          <br />
+          <span>Just build the game.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark">
+      <div class="container">
+        <div class="section-title">
+          <span class="section-kicker">Final call</span>
+          <h2>Simple multiplayer for everyone.</h2>
+          <p>
+            A deterministic Unity backend for developers who want multiplayer without turning every script into networking code.
+          </p>
+
+          <div style="margin-top: 28px;">
+            <a class="button" href="#">Get early access</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      EasyNet Multiplayer Backend. Deterministic networking for Unity games.
+    </div>
+  </footer>
+</body>
+</html>
