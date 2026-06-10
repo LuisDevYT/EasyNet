@@ -3,27 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LocalNet Multiplayer Backend</title>
+  <title>EasyNet Multiplayer Backend</title>
 
   <style>
     :root {
-      --bg: #070a12;
-      --bg-2: #0c1020;
-      --panel: #111827;
-      --panel-light: #172033;
-      --text: #f7f9ff;
-      --muted: #aab4c5;
-      --soft: #d6def0;
+      --bg: #f6f7f9;
+      --bg-2: #eef1f5;
+      --panel: #ffffff;
+      --panel-light: #f3f5f8;
+      --text: #101828;
+      --muted: #667085;
+      --soft: #344054;
 
-      --blue: #4f8cff;
-      --purple: #8b5cf6;
-      --green: #35d07f;
-      --yellow: #ffd166;
-      --red: #ff6b6b;
-      --cyan: #4dd4ff;
+      --blue: #2563eb;
+      --purple: #7c3aed;
+      --green: #168a5f;
+      --yellow: #b7791f;
+      --red: #c2410c;
+      --cyan: #087ea4;
 
-      --border: rgba(255,255,255,0.11);
-      --shadow: 0 24px 80px rgba(0,0,0,0.35);
+      --border: rgba(16,24,40,0.1);
+      --shadow: 0 22px 56px rgba(15,23,42,0.1);
     }
 
     * {
@@ -56,9 +56,10 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(7,10,18,0.82);
+      background: rgba(255,255,255,0.9);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 10px rgba(15,23,42,0.04);
     }
 
     nav {
@@ -72,7 +73,7 @@
     .logo {
       font-size: 21px;
       font-weight: 900;
-      letter-spacing: -0.04em;
+      letter-spacing: 0;
     }
 
     .logo span {
@@ -94,16 +95,17 @@
       padding: 13px 20px;
       border-radius: 13px;
       border: 0;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
+      background: var(--blue);
       color: white;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 16px 35px rgba(79,140,255,0.28);
+      box-shadow: 0 14px 30px rgba(37,99,235,0.2);
     }
 
     .button.secondary {
-      background: rgba(255,255,255,0.07);
+      background: #ffffff;
       border: 1px solid var(--border);
+      color: var(--text);
       box-shadow: none;
     }
 
@@ -111,10 +113,7 @@
       position: relative;
       padding: 108px 0 86px;
       overflow: hidden;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(79,140,255,0.28), transparent 30%),
-        radial-gradient(circle at 80% 10%, rgba(139,92,246,0.22), transparent 28%),
-        linear-gradient(180deg, #080b15 0%, #0d1224 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f6f7f9 100%);
       border-bottom: 1px solid var(--border);
     }
 
@@ -139,9 +138,9 @@
       gap: 8px;
       padding: 8px 14px;
       border-radius: 999px;
-      border: 1px solid rgba(79,140,255,0.35);
-      background: rgba(79,140,255,0.11);
-      color: #cfe0ff;
+      border: 1px solid rgba(37,99,235,0.16);
+      background: #ffffff;
+      color: var(--blue);
       font-size: 14px;
       font-weight: 700;
       margin-bottom: 24px;
@@ -150,9 +149,9 @@
     h1 {
       max-width: 940px;
       margin: 0 auto 24px;
-      font-size: clamp(44px, 7vw, 84px);
+      font-size: 72px;
       line-height: 0.94;
-      letter-spacing: -0.07em;
+      letter-spacing: 0;
     }
 
     .hero p {
@@ -180,29 +179,23 @@
     }
 
     .section-dark {
-      background: var(--bg);
+      background: #ffffff;
     }
 
     .section-blue {
-      background:
-        radial-gradient(circle at top left, rgba(79,140,255,0.14), transparent 30%),
-        #0a1020;
+      background: #f6f7f9;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
 
     .section-purple {
-      background:
-        radial-gradient(circle at top right, rgba(139,92,246,0.15), transparent 35%),
-        #100d1f;
+      background: #ffffff;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
 
     .section-green {
-      background:
-        radial-gradient(circle at center top, rgba(53,208,127,0.13), transparent 34%),
-        #07130e;
+      background: #f6f7f9;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
@@ -216,18 +209,18 @@
     .section-kicker {
       display: inline-block;
       margin-bottom: 12px;
-      color: var(--green);
+      color: var(--blue);
       font-size: 13px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
+      letter-spacing: 0;
     }
 
     .section-title h2 {
       margin: 0 0 16px;
-      font-size: clamp(32px, 5vw, 54px);
+      font-size: 48px;
       line-height: 1.05;
-      letter-spacing: -0.05em;
+      letter-spacing: 0;
     }
 
     .section-title p {
@@ -244,32 +237,32 @@
 
     .card {
       border: 1px solid var(--border);
-      border-radius: 24px;
+      border-radius: 8px;
       padding: 26px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035));
-      box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+      background: #ffffff;
+      box-shadow: 0 10px 28px rgba(15,23,42,0.05);
     }
 
     .card.blue {
-      border-color: rgba(79,140,255,0.28);
-      background: linear-gradient(180deg, rgba(79,140,255,0.13), rgba(255,255,255,0.035));
+      border-color: rgba(37,99,235,0.18);
+      background: #ffffff;
     }
 
     .card.green {
-      border-color: rgba(53,208,127,0.3);
-      background: linear-gradient(180deg, rgba(53,208,127,0.12), rgba(255,255,255,0.035));
+      border-color: rgba(22,138,95,0.18);
+      background: #ffffff;
     }
 
     .card.purple {
-      border-color: rgba(139,92,246,0.3);
-      background: linear-gradient(180deg, rgba(139,92,246,0.13), rgba(255,255,255,0.035));
+      border-color: rgba(124,58,237,0.18);
+      background: #ffffff;
     }
 
     .card h3 {
       margin: 0 0 10px;
       font-size: 22px;
       line-height: 1.2;
-      letter-spacing: -0.03em;
+      letter-spacing: 0;
     }
 
     .card p {
@@ -283,8 +276,8 @@
       display: grid;
       place-items: center;
       margin-bottom: 18px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      background: var(--panel-light);
       border: 1px solid var(--border);
       font-weight: 900;
       color: var(--green);
@@ -303,9 +296,9 @@
 
     .text-block h2 {
       margin: 0 0 16px;
-      font-size: clamp(32px, 5vw, 52px);
+      font-size: 46px;
       line-height: 1.05;
-      letter-spacing: -0.05em;
+      letter-spacing: 0;
     }
 
     .text-block p {
@@ -324,7 +317,7 @@
     .pill {
       padding: 9px 12px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.08);
+      background: #ffffff;
       border: 1px solid var(--border);
       color: var(--soft);
       font-size: 14px;
@@ -332,11 +325,11 @@
     }
 
     .code-card {
-      background: #070a10;
-      border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 24px;
+      background: #182131;
+      border: 1px solid rgba(15,23,42,0.12);
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 44px rgba(15,23,42,0.14);
     }
 
     .code-header {
@@ -344,9 +337,9 @@
       align-items: center;
       justify-content: space-between;
       padding: 14px 18px;
-      background: rgba(255,255,255,0.07);
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
+      background: #202b3d;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: #cbd5e1;
       font-size: 13px;
       font-weight: 700;
     }
@@ -360,14 +353,14 @@
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.25);
+      background: rgba(203,213,225,0.42);
     }
 
     pre {
       margin: 0;
       padding: 24px;
       overflow-x: auto;
-      color: #d8e4ff;
+      color: #e2e8f0;
       font-size: 14px;
       line-height: 1.6;
     }
@@ -376,14 +369,14 @@
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
     }
 
-    .kw { color: #ff7ab6; }
-    .type { color: #7dd3fc; }
-    .fn { color: #facc15; }
-    .str { color: #86efac; }
-    .num { color: #c084fc; }
-    .comment { color: #6b7280; }
-    .prop { color: #93c5fd; }
-    .class { color: #67e8f9; }
+    .kw { color: #f08ab8; }
+    .type { color: #8ec5ff; }
+    .fn { color: #f5c451; }
+    .str { color: #8be0b6; }
+    .num { color: #c7b7ff; }
+    .comment { color: #94a3b8; }
+    .prop { color: #a8c7fa; }
+    .class { color: #8fd8ee; }
 
     .pricing-grid {
       display: grid;
@@ -397,22 +390,21 @@
       display: flex;
       flex-direction: column;
       border: 1px solid var(--border);
-      border-radius: 26px;
+      border-radius: 8px;
       padding: 28px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.035));
+      background: #ffffff;
+      box-shadow: 0 14px 38px rgba(15,23,42,0.07);
     }
 
     .price-card.featured {
-      border-color: rgba(53,208,127,0.5);
-      background:
-        radial-gradient(circle at top right, rgba(53,208,127,0.2), transparent 35%),
-        linear-gradient(180deg, rgba(53,208,127,0.12), rgba(255,255,255,0.035));
+      border-color: rgba(22,138,95,0.35);
+      background: #ffffff;
     }
 
     .price-card h3 {
       margin: 0 0 4px;
       font-size: 28px;
-      letter-spacing: -0.04em;
+      letter-spacing: 0;
     }
 
     .ccu {
@@ -420,7 +412,7 @@
       font-weight: 800;
       text-transform: uppercase;
       font-size: 13px;
-      letter-spacing: 0.12em;
+      letter-spacing: 0;
     }
 
     .price {
@@ -428,7 +420,7 @@
       font-size: 48px;
       font-weight: 950;
       line-height: 1;
-      letter-spacing: -0.06em;
+      letter-spacing: 0;
       min-height: 54px;
       white-space: nowrap;
     }
@@ -467,9 +459,9 @@
       max-width: 920px;
       margin: 0 auto;
       text-align: center;
-      font-size: clamp(30px, 5vw, 58px);
+      font-size: 52px;
       line-height: 1.08;
-      letter-spacing: -0.055em;
+      letter-spacing: 0;
       font-weight: 950;
     }
 
@@ -479,7 +471,7 @@
 
     footer {
       padding: 44px 0;
-      background: #05070c;
+      background: #ffffff;
       border-top: 1px solid var(--border);
       color: var(--muted);
       text-align: center;
@@ -505,6 +497,20 @@
 
       .hero {
         padding: 82px 0 68px;
+      }
+
+      h1 {
+        font-size: 44px;
+        line-height: 1;
+      }
+
+      .section-title h2,
+      .text-block h2 {
+        font-size: 34px;
+      }
+
+      .big-quote {
+        font-size: 34px;
       }
 
       pre {
@@ -546,7 +552,7 @@
 
         <div class="hero-actions">
           <a class="button" href="#code">See how simple it is</a>
-          <a class="button secondary" href="#pricing">View ultra cheap pricing</a>
+          <a class="button secondary" href="#pricing">View pricing</a>
         </div>
 
         <div class="hero-note">
@@ -738,7 +744,7 @@
             <h3>No prediction required</h3>
             <p>
               The system avoids the usual prediction and reconciliation workflow.
-              Less magic, less debugging, less code.
+              Fewer hidden systems, less debugging, less code.
             </p>
           </div>
         </div>
@@ -785,8 +791,8 @@
     <section id="pricing" class="section-blue">
       <div class="container">
         <div class="section-title">
-          <span class="section-kicker">Ultra cheap pricing</span>
-          <h2>Multiplayer pricing that does not punish you for growing.</h2>
+          <span class="section-kicker">Transparent pricing</span>
+          <h2>Multiplayer pricing that stays predictable as you grow.</h2>
           <p>
             Start for free, scale when your game needs more CCU, and keep your costs predictable.
           </p>
