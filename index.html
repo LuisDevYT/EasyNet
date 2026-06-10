@@ -455,6 +455,15 @@
       margin-right: 8px;
     }
 
+    .pricing-footnote {
+      max-width: 780px;
+      margin: 22px auto 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
     .big-quote {
       max-width: 920px;
       margin: 0 auto;
@@ -467,6 +476,54 @@
 
     .big-quote span {
       color: var(--green);
+    }
+
+    .case-study-actions {
+      display: flex;
+      justify-content: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .case-study {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .case-study h2 {
+      margin: 0 0 16px;
+      font-size: 46px;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .case-study p {
+      color: var(--muted);
+      font-size: 18px;
+      margin: 0 0 22px;
+    }
+
+    .case-study-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      color: var(--muted);
+      display: grid;
+      gap: 12px;
+    }
+
+    .case-study-list li {
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .case-study-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: 900;
     }
 
     footer {
@@ -505,7 +562,8 @@
       }
 
       .section-title h2,
-      .text-block h2 {
+      .text-block h2,
+      .case-study h2 {
         font-size: 34px;
       }
 
@@ -527,10 +585,9 @@
         <div class="logo">Easy<span>Net</span></div>
 
         <div class="nav-links">
-          <a href="#simple">Simple</a>
-          <a href="#code">Code</a>
+          <a href="#simple">How it works</a>
+          <a href="#code">SDK</a>
           <a href="#pricing">Pricing</a>
-          <a href="#transport">Transport</a>
         </div>
 
         <a class="button secondary" href="#pricing">Get started</a>
@@ -567,8 +624,8 @@
           <span class="section-kicker">The main idea</span>
           <h2>You program the game normally.</h2>
           <p>
-            No RPC spam. No network variables everywhere. No special multiplayer version of every mechanic.
-            Your gameplay code receives input, updates the simulation, and every client reaches the same result.
+            Use a Unity-style object-oriented API, not ECS or a custom gameplay architecture.
+            Your scripts receive input, update deterministic objects, and every client reaches the same result.
           </p>
         </div>
 
@@ -586,7 +643,7 @@
             <div class="icon">02</div>
             <h3>Run deterministic code</h3>
             <p>
-              Use deterministic values like <strong>sfloat</strong> so the same input produces the same gameplay result.
+              Use deterministic values like <strong>sfloat</strong> and the included deterministic physics engine for movement and gameplay logic.
             </p>
           </div>
 
@@ -594,7 +651,7 @@
             <div class="icon">03</div>
             <h3>Everyone stays synced</h3>
             <p>
-              The backend handles packet flow, ordering and reliability so your game logic stays clean.
+              Android, iOS, Windows, Mac and Linux clients can run the same deterministic simulation.
             </p>
           </div>
         </div>
@@ -618,6 +675,7 @@
               <div class="pill">No client prediction</div>
               <div class="pill">No rollback setup</div>
               <div class="pill">Uses sfloat</div>
+              <div class="pill">No ECS required</div>
             </div>
           </div>
 
@@ -635,6 +693,7 @@
 
 <span class="kw">public class</span> <span class="class">PlayerController</span> : <span class="type">DeterministicBehaviour</span>
 {
+    <span class="kw">public</span> <span class="type">DeterministicRigidbody</span> <span class="prop">body</span>;
     <span class="kw">public</span> <span class="type">sfloat</span> <span class="prop">moveSpeed</span> = (<span class="type">sfloat</span>)<span class="num">5</span>;
 
     <span class="kw">public override void</span> <span class="fn">OnInput</span>(<span class="type">PlayerInput</span> input)
@@ -647,7 +706,7 @@
 
         <span class="type">sfloat3</span> direction = <span class="kw">new</span> <span class="type">sfloat3</span>(x, <span class="num">0</span>, z);
 
-        transform.position += direction * moveSpeed * Deterministic.DeltaTime;
+        body.velocity = direction * moveSpeed;
     }
 }</code></pre>
           </div>
@@ -697,55 +756,18 @@
 
           <div class="text-block">
             <span class="section-kicker">Deterministic timing</span>
-            <h2>Coroutines that belong to the simulation.</h2>
+            <h2>Gameplay timing without RPC choreography.</h2>
             <p>
-              Timers, cooldowns, bombs, traps and abilities can use deterministic time.
-              That means every client waits the same amount of simulation time before running the event.
+              Cooldowns, damage windows, traps, explosions and status effects can run inside the deterministic simulation.
+              No manual RPCs to start timers, no client/server timing guesswork, and nothing extra to synchronize because the sequence is synced by default.
             </p>
 
             <div class="pill-list">
               <div class="pill">WaitForDeterministicSeconds</div>
               <div class="pill">Deterministic cooldowns</div>
               <div class="pill">Synced abilities</div>
-              <div class="pill">No manual RPC event</div>
+              <div class="pill">Synced by default</div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="transport" class="section-green">
-      <div class="container">
-        <div class="section-title">
-          <span class="section-kicker">Optimized transport</span>
-          <h2>Reliable UDP made for real mobile games.</h2>
-          <p>
-            The socket is optimized for gameplay packets and mobile data.
-            It is designed to keep the game responsive while still giving you reliable delivery where it matters.
-          </p>
-        </div>
-
-        <div class="grid">
-          <div class="card green">
-            <h3>Reliable UDP</h3>
-            <p>
-              Important packets can be delivered reliably without switching your whole game to slow request-response logic.
-            </p>
-          </div>
-
-          <div class="card green">
-            <h3>Mobile data friendly</h3>
-            <p>
-              Built for players on unstable networks, changing signal quality and real-world phone connections.
-            </p>
-          </div>
-
-          <div class="card green">
-            <h3>No prediction required</h3>
-            <p>
-              The system avoids the usual prediction and reconciliation workflow.
-              Fewer hidden systems, less debugging, less code.
-            </p>
           </div>
         </div>
       </div>
@@ -757,31 +779,29 @@
           <span class="section-kicker">Why it is easy</span>
           <h2>Simple multiplayer, by design.</h2>
           <p>
-            Rollback and prediction can be powerful, but they also make multiplayer harder to understand.
-            This backend chooses simplicity first: deterministic input sync with clean gameplay code.
+            Write deterministic gameplay code, send player input, and let an optimized UDP socket handle gameplay traffic for mobile networks.
           </p>
         </div>
 
         <div class="grid">
           <div class="card">
-            <h3>Without this backend</h3>
+            <h3>Deterministic workflow</h3>
             <p>
-              You often need RPCs, network variables, prediction, reconciliation, state correction and special multiplayer logic.
+              No RPC spam, network variables everywhere, client prediction or rollback setup.
             </p>
           </div>
 
           <div class="card blue">
-            <h3>With this backend</h3>
+            <h3>Optimized UDP socket</h3>
             <p>
-              You write deterministic gameplay code and send player inputs.
-              The same code runs everywhere.
+              Reliable gameplay packets that stay responsive even on mobile data, unstable signal quality and real-world phone connections.
             </p>
           </div>
 
           <div class="card green">
-            <h3>Result</h3>
+            <h3>Cleaner debugging</h3>
             <p>
-              Multiplayer becomes easier to build, easier to debug and easier to ship, especially for small teams.
+              Less networking code in gameplay scripts means fewer hidden systems to debug.
             </p>
           </div>
         </div>
@@ -794,7 +814,7 @@
           <span class="section-kicker">Transparent pricing</span>
           <h2>Multiplayer pricing that stays predictable as you grow.</h2>
           <p>
-            Start for free, scale when your game needs more CCU, and keep your costs predictable.
+            Start free, upgrade through fixed CCU plans, and use Scale when you need burst capacity with per-CCU overage.
           </p>
         </div>
 
@@ -814,7 +834,6 @@
               <li>Reliable UDP socket</li>
               <li>Room + key matchmaking</li>
               <li>Trophy-based matchmaking</li>
-              <li>Capped at 100 CCU</li>
             </ul>
           </div>
 
@@ -833,7 +852,6 @@
               <li>Reliable UDP socket</li>
               <li>Room + key matchmaking</li>
               <li>Trophy-based matchmaking</li>
-              <li>Capped at 500 CCU</li>
             </ul>
           </div>
 
@@ -852,7 +870,6 @@
               <li>Reliable UDP socket</li>
               <li>Room + key matchmaking</li>
               <li>Trophy-based matchmaking</li>
-              <li>Capped at 1000 CCU</li>
             </ul>
           </div>
 
@@ -871,8 +888,39 @@
               <li>Reliable UDP socket</li>
               <li>Room + key matchmaking</li>
               <li>Trophy-based matchmaking</li>
-              <li>CCU burst + per-CCU overage</li>
+              <li>2000 CCU included</li>
+              <li>Pay-as-you-go extra peak CCU: $0.05 / CCU / month</li>
             </ul>
+          </div>
+        </div>
+
+        <p class="pricing-footnote">
+          CCU means concurrent users: players connected at the same time. As a planning estimate,
+          1000 peak CCU can cover roughly 100k daily active users when matches average about
+          3 minutes and traffic is spread across the day.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-dark">
+      <div class="container">
+        <div class="case-study">
+          <span class="section-kicker">Case study</span>
+          <h2>See how EasyNet solved fast-action multiplayer sync.</h2>
+          <p>
+            Beast Smash is a fast platform fighter, but the problem is common to many multiplayer games:
+            host-client architectures make fair fast combat hard without prediction, reconciliation or manual RPC chains.
+          </p>
+
+          <ul class="case-study-list">
+            <li>No player owns the truth of the fight; movement, hits and physics resolve from the same deterministic inputs.</li>
+            <li>Damage windows, abilities and cooldowns stay synced by default inside one simulation timeline.</li>
+            <li>You write gameplay once instead of splitting combat logic across server RPCs, client guesses and correction code.</li>
+            <li>The same pattern also fits co-op, arena, party, trap-based and ability-heavy games.</li>
+          </ul>
+
+          <div class="case-study-actions">
+            <a class="button" href="#">View case study</a>
           </div>
         </div>
       </div>
@@ -884,22 +932,6 @@
           Stop writing networking code everywhere.
           <br />
           <span>Just build the game.</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="section-dark">
-      <div class="container">
-        <div class="section-title">
-          <span class="section-kicker">Final call</span>
-          <h2>Simple multiplayer for everyone.</h2>
-          <p>
-            A deterministic Unity backend for developers who want multiplayer without turning every script into networking code.
-          </p>
-
-          <div style="margin-top: 28px;">
-            <a class="button" href="#">Get early access</a>
-          </div>
         </div>
       </div>
     </section>
