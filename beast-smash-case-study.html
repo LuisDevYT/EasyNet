@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beast Smash Case Study | EasyNet</title>
+
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --bg-2: #eef1f5;
+      --panel: #ffffff;
+      --text: #101828;
+      --muted: #667085;
+      --soft: #344054;
+      --blue: #2563eb;
+      --green: #168a5f;
+      --purple: #7c3aed;
+      --yellow: #b7791f;
+      --cyan: #087ea4;
+      --border: rgba(16,24,40,0.1);
+      --shadow: 0 22px 56px rgba(15,23,42,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+    }
+
+    .article {
+      width: min(820px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 10px rgba(15,23,42,0.04);
+    }
+
+    nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .logo span {
+      color: var(--blue);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 20px;
+      border-radius: 8px;
+      border: 0;
+      background: var(--blue);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(37,99,235,0.2);
+      min-height: 48px;
+    }
+
+    .button.secondary {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    .hero {
+      padding: 90px 0 64px;
+      background: linear-gradient(180deg, #ffffff 0%, #f6f7f9 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .kicker {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 960px;
+      margin: 0 0 22px;
+      font-size: 64px;
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .dek {
+      max-width: 780px;
+      margin: 0 0 30px;
+      color: var(--muted);
+      font-size: 20px;
+    }
+
+    .byline {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--soft);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .byline span {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: #ffffff;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 26px;
+    }
+
+    .impact-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .impact-stat {
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 10px 28px rgba(15,23,42,0.05);
+    }
+
+    .impact-stat strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 31px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .impact-stat span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .hero-media {
+      width: min(1120px, 92%);
+      margin: 42px auto 0;
+      min-height: 480px;
+      border: 1px solid rgba(16,24,40,0.13);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(37,99,235,0.18), transparent 35%),
+        linear-gradient(225deg, rgba(22,138,95,0.18), transparent 38%),
+        repeating-linear-gradient(0deg, rgba(16,24,40,0.055), rgba(16,24,40,0.055) 1px, transparent 1px, transparent 30px),
+        repeating-linear-gradient(90deg, rgba(16,24,40,0.045), rgba(16,24,40,0.045) 1px, transparent 1px, transparent 30px),
+        #ffffff;
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .media-label {
+      max-width: 500px;
+    }
+
+    .media-label strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 28px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .media-label span {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    section {
+      padding: 76px 0;
+    }
+
+    .section-white {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-blue {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article h2 {
+      margin: 0 0 20px;
+      font-size: 42px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .article h3 {
+      margin: 36px 0 10px;
+      font-size: 24px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .article p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .article p.lead {
+      color: var(--soft);
+      font-size: 21px;
+      line-height: 1.58;
+    }
+
+    .pullquote {
+      margin: 42px 0;
+      padding: 30px 0 30px 28px;
+      border-left: 5px solid var(--green);
+      color: var(--text);
+      font-size: 31px;
+      line-height: 1.18;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .callout {
+      margin: 38px 0;
+      padding: 26px;
+      border: 1px solid rgba(37,99,235,0.18);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 10px 28px rgba(15,23,42,0.05);
+    }
+
+    .callout h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .economics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 38px 0;
+    }
+
+    .economics-item {
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 10px 28px rgba(15,23,42,0.05);
+    }
+
+    .economics-item span {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .economics-item strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .economics-item p {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .image-band {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .gallery-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .image-placeholder {
+      min-height: 250px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(8,126,164,0.16), transparent 40%),
+        linear-gradient(225deg, rgba(183,121,31,0.18), transparent 42%),
+        repeating-linear-gradient(45deg, rgba(16,24,40,0.045), rgba(16,24,40,0.045) 1px, transparent 1px, transparent 18px),
+        #ffffff;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+      text-align: center;
+      box-shadow: 0 10px 28px rgba(15,23,42,0.05);
+    }
+
+    .image-placeholder.tall {
+      min-height: 518px;
+    }
+
+    .image-placeholder strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .image-placeholder span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .cta {
+      text-align: center;
+    }
+
+    .cta h2 {
+      max-width: 820px;
+      margin: 0 auto 18px;
+      font-size: 48px;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .cta p {
+      max-width: 720px;
+      margin: 0 auto 28px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    footer {
+      padding: 44px 0;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      h1 {
+        font-size: 54px;
+      }
+
+      .impact-stats,
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-media {
+        min-height: 380px;
+      }
+
+      .image-placeholder.tall {
+        min-height: 330px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 72px 0 52px;
+      }
+
+      h1 {
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      .dek {
+        font-size: 18px;
+      }
+
+      .hero-media {
+        min-height: 310px;
+      }
+
+      .article h2,
+      .cta h2 {
+        font-size: 33px;
+      }
+
+      .article p,
+      .article p.lead {
+        font-size: 17px;
+      }
+
+      .economics {
+        grid-template-columns: 1fr;
+      }
+
+      .pullquote {
+        padding-left: 20px;
+        font-size: 27px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a class="logo" href="index.html">Easy<span>Net</span></a>
+
+        <div class="nav-links">
+          <a href="#context">Context</a>
+          <a href="#decision">Decision</a>
+          <a href="#results">Results</a>
+        </div>
+
+        <a class="button secondary" href="index.html">Back to home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="article">
+        <span class="kicker">Case study</span>
+        <h1>How Beast Smash shipped fair mobile multiplayer without host-client complexity.</h1>
+        <p class="dek">
+          Beast Smash needed fast online fights that felt fair, stayed affordable and did not force the
+          gameplay code to become networking code. EasyNet made the match work without a player-owned host
+          and without paying for a full authoritative server simulation.
+        </p>
+
+        <div class="byline">
+          <span>Simple gameplay code</span>
+          <span>No player host</span>
+          <span>No full server simulation</span>
+          <span>Low backend cost</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="button" href="#results">See results</a>
+          <a class="button secondary" href="https://play.google.com/store/apps/details?id=com.LuisDev.BeastSmash" target="_blank" rel="noopener noreferrer">View on Google Play</a>
+        </div>
+
+        <div class="impact-stats" aria-label="Beast Smash live game metrics">
+          <div class="impact-stat">
+            <strong>500k+</strong>
+            <span>Google Play downloads</span>
+          </div>
+          <div class="impact-stat">
+            <strong>70k</strong>
+            <span>daily active users</span>
+          </div>
+          <div class="impact-stat">
+            <strong>1,000+ CCU</strong>
+            <span>peak concurrency</span>
+          </div>
+          <div class="impact-stat">
+            <strong>$5k/mo</strong>
+            <span>from ads alone</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-media" aria-label="Gameplay video placeholder">
+        <div class="media-label">
+          <strong>Gameplay video placeholder</strong>
+          <span>Replace this area with real Beast Smash footage: a short match, a KO moment or a before-and-after network comparison.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="context" class="section-white">
+      <article class="article">
+        <span class="kicker">Context</span>
+        <h2>The goal was multiplayer that still felt simple to build.</h2>
+        <p class="lead">
+          Beast Smash is easy to understand: choose a character, enter a short match, hit opponents and
+          try to be the last one standing. The multiplayer needed to preserve that simplicity for players
+          and for the game code itself.
+        </p>
+        <p>
+          The team did not want every ability to become RPCs, server checks, client guesses and correction
+          logic. Pressing attack should remain a game action, not a networking feature. At the same time,
+          fairness lives in small moments: a hit, a launch, a recovery, an item, or the second a player
+          loses connection.
+        </p>
+
+        <div class="pullquote">
+          The challenge was keeping the code simple, the fight fair and the multiplayer bill small.
+        </div>
+
+        <p>
+          Host-client was cheap but fragile. Full server authority was fair but expensive. Beast Smash
+          needed the middle: no player-owned host, no host migration freeze, no full server simulation,
+          and a cost low enough for an ad-supported mobile game.
+        </p>
+      </article>
+    </section>
+
+    <section id="decision" class="section-white">
+      <article class="article">
+        <span class="kicker">Decision</span>
+        <h2>EasyNet made the match authoritative without making the server carry the whole game.</h2>
+        <p class="lead">
+          EasyNet used a deterministic match model: the server coordinates the room and the ordered match
+          timeline, while every player reaches the same result through the same simulation.
+        </p>
+        <p>
+          That changed what had to be trusted. A player performs an action, but does not report the result
+          of a punch, launch or KO. The shared simulation decides what happened, so the outcome is not
+          negotiated between devices and is not owned by one host.
+        </p>
+        <p>
+          Combat can stay normal game behavior: movement, attacks, cooldowns, items, launch force,
+          recoveries and eliminations. EasyNet keeps everyone on the same timeline instead of turning
+          every gameplay moment into a custom networking message.
+        </p>
+
+        <div class="callout">
+          <h3>The core idea</h3>
+          <p>
+            Beast Smash does not ask the network to decide who hit whom. EasyNet keeps the match aligned,
+            and the deterministic game rules produce the result.
+          </p>
+        </div>
+
+        <p>
+          This also makes cheating harder in the places that matter. A client can try to act, but cannot
+          simply claim that an opponent was hit or that a launch happened differently.
+        </p>
+      </article>
+    </section>
+
+    <section class="image-band" id="media">
+      <div class="container">
+        <div class="gallery">
+          <div class="image-placeholder tall">
+            <div>
+              <strong>Vertical gameplay placeholder</strong>
+              <span>Replace with a mobile capture showing touch controls, characters and a live fight.</span>
+            </div>
+          </div>
+
+          <div class="gallery-stack">
+            <div class="image-placeholder">
+              <div>
+                <strong>Match flow placeholder</strong>
+                <span>Replace with lobby, matchmaking or mode selection media.</span>
+              </div>
+            </div>
+
+            <div class="image-placeholder">
+              <div>
+                <strong>Combat moment placeholder</strong>
+                <span>Replace with a KO, item throw, special attack or close endgame moment.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="results" class="section-blue">
+      <div class="article">
+        <span class="kicker">Result</span>
+        <h2>The economics made the architecture practical.</h2>
+        <p>
+          Beast Smash reached more than 500,000 downloads on Google Play, more than 70,000 daily active
+          users, crossed 1,000 concurrent players and generated around $5,000 per month from ads alone.
+          The architecture had to keep that scale profitable, not turn it into an infrastructure problem.
+        </p>
+
+        <div class="economics" aria-label="Revenue and backend cost comparison">
+          <div class="economics-item">
+            <span>Revenue</span>
+            <strong>$5,000/month</strong>
+            <p>Approximate monthly ad revenue from the live game.</p>
+          </div>
+
+          <div class="economics-item">
+            <span>Backend cost</span>
+            <strong>$100/month</strong>
+            <p>Current EasyNet Scale plan before any overage.</p>
+          </div>
+        </div>
+
+        <p>
+          That puts the multiplayer backend at around 2% of monthly ad revenue before overage, making
+          EasyNet cheap enough for the game to stay profitable.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-white">
+      <article class="article">
+        <span class="kicker">Why it matters</span>
+        <h2>The pattern fits more than one fighting game.</h2>
+        <p>
+          Beast Smash made the problem obvious because combat is timing-sensitive, but the same pressure
+          appears in arena games, co-op action, party games and short competitive sessions. When player
+          hosting is too fragile and full server simulation is too expensive, deterministic multiplayer
+          gives mobile games a practical middle path.
+        </p>
+      </article>
+    </section>
+
+    <section class="section-blue">
+      <div class="container cta">
+        <h2>Build mobile multiplayer that does not depend on the most fragile phone in the match.</h2>
+        <p>
+          EasyNet is built for Unity teams that need fair action multiplayer, predictable cost and less
+          networking complexity inside the game itself.
+        </p>
+        <a class="button" href="index.html#pricing">View EasyNet pricing</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      EasyNet Multiplayer Backend. Deterministic networking for Unity games.
+    </div>
+  </footer>
+</body>
+</html>
